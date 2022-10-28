@@ -3,14 +3,13 @@ import * as React from "react";
 import { ChangeEvent, FunctionComponent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
-import { createAccount } from "../model/user";
 import { EXPENSES_PATH, LOGIN_PATH } from "../utils/routes";
 
-export const CreateAccountPage: FunctionComponent = () => {
+export const NewAccountPage: FunctionComponent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [alertText, setAlertText] = useState("");
-  const { login } = useLogin();
+  const { login, createAccount } = useLogin();
   const navigate = useNavigate();
 
   const onEmailChange = (event: ChangeEvent<HTMLInputElement>) => {

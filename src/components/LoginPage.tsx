@@ -3,7 +3,7 @@ import * as React from "react";
 import { FunctionComponent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
-import { CREATE_ACCOUNT_PATH, EXPENSES_PATH } from "../utils/routes";
+import { EXPENSES_PATH, NEW_ACCOUNT_PATH } from "../utils/routes";
 
 export const LoginPage: FunctionComponent = () => {
   const [email, setEmail] = useState("");
@@ -45,7 +45,7 @@ export const LoginPage: FunctionComponent = () => {
         <Button variant="contained" onClick={onLoginClick}>Login</Button>
       </p>
       <p>
-        Not a user? <Link to={CREATE_ACCOUNT_PATH}>Create an account</Link>
+        Not a user? <Link to={NEW_ACCOUNT_PATH}>Create an account</Link>
       </p>
     </>
   );

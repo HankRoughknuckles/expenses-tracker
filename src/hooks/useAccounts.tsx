@@ -1,16 +1,20 @@
 import { createContext, FunctionComponent, PropsWithChildren, useContext, useState } from "react";
-import { Account } from "../model/user";
+import { Categories } from "../model";
+import { Account } from "../model/accounts";
 
 const initialState = {
   authenticatedAccount: null,
   setAuthenticatedAccount: () => undefined,
   unsetAuthenticatedAccount: () => undefined,
-  isUserLoggedIn: false
+  isUserLoggedIn: false,
+  categories: [],
+  setCategories: () => undefined
 };
 
-/** Hook for storing the account information of the currently authenticated user */
+/** Hook for storing the information of the currently authenticated user */
 export const _useAccountState = () => {
   const [authenticatedAccount, setAuthenticatedAccount] = useState<Account | null>(null);
+  const [categories, setCategories] = useState<Categories>([]);
 
   const unsetAuthenticatedAccount = () => {
     setAuthenticatedAccount(null);
@@ -19,7 +23,9 @@ export const _useAccountState = () => {
   return {
     authenticatedAccount,
     setAuthenticatedAccount,
-    unsetAuthenticatedAccount
+    unsetAuthenticatedAccount,
+    categories,
+    setCategories
   };
 };
 
