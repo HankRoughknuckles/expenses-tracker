@@ -1,9 +1,16 @@
 .container {
   .nav {
     padding-left: 0;
+    display: flex;
+    justify-content: space-between;
 
-    * {
+    .navItem:not(:last-child) {
       margin-right: 2em;
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
     }
   }
 }
