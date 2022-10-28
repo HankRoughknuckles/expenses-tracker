@@ -1,5 +1,4 @@
-/** The location in local storage where all the information for this app is stored */
-const LOCAL_STORAGE_KEY = "expenseTracker";
+import { getDatabase, setDatabase } from "./index";
 
 export interface Account {
   email: string;
@@ -7,26 +6,15 @@ export interface Account {
 }
 
 /** Saves the passed accounts into the database */
-const setAccounts = (accounts: Account[]): void => {
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(accounts));
+export const setAccounts = (accounts: Account[]): void => {
+  setDatabase({
+    ...getDatabase(),
+    accounts
+  });
 };
 
-const getAccounts = (): Account[] => {
-  const localStorageItem: string | null = localStorage.getItem(LOCAL_STORAGE_KEY);
-  if (localStorageItem === null) throw new Error("No database available");
-
-  const accounts = JSON.parse(localStorageItem || "[]");
-  if (!Array.isArray(accounts)) throw new Error("Database is corrupt");
-  return accounts;
-};
-
-/** Creates the accounts database if it does not exist */
-export const setupAccountDatabase = () => {
-  try {
-    getAccounts();
-  } catch (e) {
-    setAccounts([]);
-  }
+export const getAccounts = (): Account[] => {
+  return getDatabase().accounts;
 };
 
 const getAccountByEmail = (email: string): Account | undefined => {

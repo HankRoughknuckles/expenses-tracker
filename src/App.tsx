@@ -3,19 +3,31 @@ import React, { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.scss";
 import { CategoriesListPage } from "./components/CategoriesListPage";
-import { CreateAccountPage } from "./components/CreateAccountPage";
+import { EditCategoryPage } from "./components/EditCategoryPage";
 import { ExpensesListPage } from "./components/ExpensesListPage";
 import { LoginPage } from "./components/LoginPage";
 import { Nav } from "./components/Nav";
+import { NewAccountPage } from "./components/NewAccountPage";
+import { NewCategoryPage } from "./components/NewCategoryPage";
+import { useCategories } from "./hooks/useCategories";
 import { useLogin } from "./hooks/useLogin";
-import { setupAccountDatabase } from "./model/user";
-import { CATEGORIES_PATH, CREATE_ACCOUNT_PATH, LOGIN_PATH, ROOT_PATH } from "./utils/routes";
+import { setupDatabase } from "./model";
+import {
+  CATEGORIES_PATH,
+  EDIT_CATEGORY_PATH,
+  LOGIN_PATH,
+  NEW_ACCOUNT_PATH,
+  NEW_CATEGORY_PATH,
+  ROOT_PATH
+} from "./utils/routes";
 
 /** Routes that can only be accessed if a user is logged in */
 const privateRoutes = (
   <>
     <Route path={ROOT_PATH} element={<ExpensesListPage />} />
     <Route path={CATEGORIES_PATH} element={<CategoriesListPage />} />
+    <Route path={NEW_CATEGORY_PATH} element={<NewCategoryPage />} />
+    <Route path={EDIT_CATEGORY_PATH} element={<EditCategoryPage />} />
   </>
 );
 
@@ -23,18 +35,30 @@ const privateRoutes = (
 const publicRoutes = (
   <>
     <Route path={LOGIN_PATH} element={<LoginPage />} />
-    <Route path={CREATE_ACCOUNT_PATH} element={<CreateAccountPage />} />
-    {/* Need * route to redirect any other attempts back to the login page */}
+    <Route path={NEW_ACCOUNT_PATH} element={<NewAccountPage />} />
+    {/* Need a * route to redirect any other attempts back to the login page */}
     <Route path={"*"} element={<Navigate replace to={LOGIN_PATH} />} />
   </>
 );
 
 function App() {
   const { isUserLoggedIn } = useLogin();
+  // TODO: warning, remove this before finishing everything
+  // const { isUserLoggedIn, login } = useLogin();
+  const { fetchCategories } = useCategories();
 
   useEffect(() => {
-    setupAccountDatabase();
-  }, []);
+    setupDatabase();
+    fetchCategories();
+
+    // // TODO: WARNING! REMOVE THIS
+    // // TODO: WARNING! REMOVE THIS
+    // const account = getAccounts().find(a => a.email === "admin" && a.password === "admin");
+    // if (!account) {
+    //   createAccount("admin", "admin");
+    // }
+    // login("admin", "admin");
+  }, [fetchCategories]);
 
   return (
     <Container maxWidth={"xl"} className={"container"}>

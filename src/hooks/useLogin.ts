@@ -1,4 +1,5 @@
-import { Account, checkCredentials } from "../model/user";
+import * as api from "../api";
+import { Account } from "../model/accounts";
 import { useAccountContext } from "./useAccounts";
 
 /**
@@ -10,7 +11,7 @@ export const useLogin = () => {
   const isUserLoggedIn = authenticatedAccount !== null;
 
   const login = (email: string, password: string): Account => {
-    const account = checkCredentials(email, password);
+    const account = api.login(email, password);
     setAuthenticatedAccount(account);
     return account;
   };
@@ -19,9 +20,14 @@ export const useLogin = () => {
     unsetAuthenticatedAccount();
   };
 
+  const createAccount = (email: string, password: string): void => {
+    api.createAccount(email, password);
+  };
+
   return {
     login,
     isUserLoggedIn,
-    logout
+    logout,
+    createAccount
   };
 };
