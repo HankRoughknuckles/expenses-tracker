@@ -2,26 +2,25 @@ import { Button, Grid, TextField } from "@mui/material";
 import React, { FunctionComponent, SyntheticEvent, useState } from "react";
 import { Category } from "../model/categories";
 
-interface Props {
-  onFormSubmit: ({
-                   event,
-                   category
-                 }: { event: SyntheticEvent, category: { name: Category["name"] } }) => void;
-  initialName?: string;
+export interface CategoryFormData {
+  name: Category["name"];
 }
 
-export const CategoryForm: FunctionComponent<Props> = ({ onFormSubmit, initialName = "" }) => {
-  const [name, setName] = useState(initialName);
+interface Props {
+  onFormSubmit: (categoryFormData: CategoryFormData) => void;
+  initialTitle?: CategoryFormData["name"];
+}
+
+export const CategoryForm: FunctionComponent<Props> = ({ onFormSubmit, initialTitle = "" }) => {
+  const [name, setName] = useState(initialTitle);
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
 
   const handleFormSubmit = (event: SyntheticEvent) => {
-    onFormSubmit({
-      event,
-      category: { name }
-    });
+    event.preventDefault();
+    onFormSubmit({ name });
   };
 
   return (
@@ -29,7 +28,7 @@ export const CategoryForm: FunctionComponent<Props> = ({ onFormSubmit, initialNa
       <Grid item md={3}>
         <form onSubmit={handleFormSubmit}>
           <div>
-            <TextField label="Category name" variant="standard" value={name} onChange={onNameChange} />
+            <TextField label="Category name" variant="outlined" value={name} onChange={onNameChange} />
           </div>
           <p>
             <Button type="submit" variant="contained">Save</Button>

@@ -1,21 +1,19 @@
 import { Alert, Grid } from "@mui/material";
 import * as React from "react";
-import { FunctionComponent, SyntheticEvent, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCategories } from "../hooks/useCategories";
-import { Category } from "../model/categories";
 import { CATEGORIES_PATH } from "../utils/routes";
-import { CategoryForm } from "./CategoryForm";
+import { CategoryForm, CategoryFormData } from "./CategoryForm";
 
 export const NewCategoryPage: FunctionComponent = () => {
   const [alertText, setAlertText] = useState("");
   const navigate = useNavigate();
   const { createCategory } = useCategories();
 
-  const onFormSubmit = ({ event, category }: { event: SyntheticEvent, category: { name: Category["name"] } }) => {
+  const onFormSubmit = ({ name }: CategoryFormData) => {
     try {
-      event.preventDefault();
-      createCategory(category.name);
+      createCategory(name);
       navigate(CATEGORIES_PATH);
     } catch (e) {
       if (e instanceof Error) {

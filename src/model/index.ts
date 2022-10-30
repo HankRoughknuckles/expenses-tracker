@@ -1,9 +1,11 @@
 import { v4 as uuid } from "uuid";
 import { Account } from "./accounts";
 import { Category } from "./categories";
+import { Transaction } from "./transactions";
 
 export type DatabaseId = string;
 export type Accounts = Account[];
+export type Transactions = Transaction[];
 export type Categories = Category[];
 
 interface Database {
