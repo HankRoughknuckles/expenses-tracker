@@ -4,27 +4,34 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.scss";
 import { CategoriesListPage } from "./components/CategoriesListPage";
 import { EditCategoryPage } from "./components/EditCategoryPage";
-import { ExpensesListPage } from "./components/ExpensesListPage";
+import { EditTransactionPage } from "./components/EditTransactionPage";
 import { LoginPage } from "./components/LoginPage";
 import { Nav } from "./components/Nav";
 import { NewAccountPage } from "./components/NewAccountPage";
 import { NewCategoryPage } from "./components/NewCategoryPage";
+import { NewTransactionPage } from "./components/NewTransactionPage";
+import { TransactionsListPage } from "./components/TransactionsListPage";
 import { useCategories } from "./hooks/useCategories";
 import { useLogin } from "./hooks/useLogin";
+import { useTransactions } from "./hooks/useTransactions";
 import { setupDatabase } from "./model";
 import {
   CATEGORIES_PATH,
   EDIT_CATEGORY_PATH,
+  EDIT_TRANSACTION_PATH,
   LOGIN_PATH,
   NEW_ACCOUNT_PATH,
   NEW_CATEGORY_PATH,
+  NEW_TRANSACTION_PATH,
   ROOT_PATH
 } from "./utils/routes";
 
 /** Routes that can only be accessed if a user is logged in */
 const privateRoutes = (
   <>
-    <Route path={ROOT_PATH} element={<ExpensesListPage />} />
+    <Route path={ROOT_PATH} element={<TransactionsListPage />} />
+    <Route path={NEW_TRANSACTION_PATH} element={<NewTransactionPage />} />
+    <Route path={EDIT_TRANSACTION_PATH} element={<EditTransactionPage />} />
     <Route path={CATEGORIES_PATH} element={<CategoriesListPage />} />
     <Route path={NEW_CATEGORY_PATH} element={<NewCategoryPage />} />
     <Route path={EDIT_CATEGORY_PATH} element={<EditCategoryPage />} />
@@ -43,22 +50,30 @@ const publicRoutes = (
 
 function App() {
   const { isUserLoggedIn } = useLogin();
-  // TODO: warning, remove this before finishing everything
+  // // TODO: warning, remove this before finishing everything
   // const { isUserLoggedIn, login } = useLogin();
   const { fetchCategories } = useCategories();
+  const { fetchTransactions } = useTransactions();
 
+  // Setup the database and fetch the categories on app load
   useEffect(() => {
     setupDatabase();
     fetchCategories();
 
-    // // TODO: WARNING! REMOVE THIS
-    // // TODO: WARNING! REMOVE THIS
+    // // // TODO: WARNING! REMOVE THIS
+    // // // TODO: WARNING! REMOVE THIS
     // const account = getAccounts().find(a => a.email === "admin" && a.password === "admin");
     // if (!account) {
     //   createAccount("admin", "admin");
     // }
     // login("admin", "admin");
   }, [fetchCategories]);
+
+  // Fetch transactions for the user on login
+  useEffect(() => {
+    if (!isUserLoggedIn) return;
+    fetchTransactions();
+  }, [fetchTransactions, isUserLoggedIn]);
 
   return (
     <Container maxWidth={"xl"} className={"container"}>

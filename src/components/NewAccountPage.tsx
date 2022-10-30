@@ -3,7 +3,7 @@ import * as React from "react";
 import { ChangeEvent, FunctionComponent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
-import { EXPENSES_PATH, LOGIN_PATH } from "../utils/routes";
+import { LOGIN_PATH, TRANSACTIONS_PATH } from "../utils/routes";
 
 export const NewAccountPage: FunctionComponent = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +24,7 @@ export const NewAccountPage: FunctionComponent = () => {
     try {
       createAccount(email, password);
       login(email, password);
-      navigate(EXPENSES_PATH, { replace: true });
+      navigate(TRANSACTIONS_PATH, { replace: true });
     } catch (e) {
       if (e instanceof Error) {
         setAlertText(e.message);

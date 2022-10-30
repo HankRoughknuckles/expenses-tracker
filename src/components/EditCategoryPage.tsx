@@ -1,10 +1,9 @@
 import { Alert, Grid } from "@mui/material";
-import React, { FunctionComponent, SyntheticEvent, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCategories } from "../hooks/useCategories";
-import { Category } from "../model/categories";
 import { CATEGORIES_PATH } from "../utils/routes";
-import { CategoryForm } from "./CategoryForm";
+import { CategoryForm, CategoryFormData } from "./CategoryForm";
 
 export const EditCategoryPage: FunctionComponent = () => {
   const [alertText, setAlertText] = useState("");
@@ -13,10 +12,9 @@ export const EditCategoryPage: FunctionComponent = () => {
   const category = getCategory(categoryId || "");
   const navigate = useNavigate();
 
-  const onFormSubmit = ({ event, category }: { event: SyntheticEvent, category: { name: Category["name"] } }) => {
+  const onFormSubmit = ({ name }: CategoryFormData) => {
     try {
-      event.preventDefault();
-      updateCategory(categoryId!, category.name);
+      updateCategory(categoryId!, name);
       navigate(CATEGORIES_PATH);
     } catch (e) {
       if (e instanceof Error) {
@@ -38,7 +36,7 @@ export const EditCategoryPage: FunctionComponent = () => {
       {
         category !== undefined ? (
           <Grid item md={6}>
-            <CategoryForm onFormSubmit={onFormSubmit} initialName={category.name} />
+            <CategoryForm onFormSubmit={onFormSubmit} initialTitle={category.name} />
           </Grid>
         ) : <p>Category not found...</p>
       }
