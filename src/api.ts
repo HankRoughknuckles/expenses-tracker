@@ -1,6 +1,6 @@
 import { Transactions } from "./model";
 import * as accountsModel from "./model/accounts";
-import { Account } from "./model/accounts";
+import { Account, LoginCredentials } from "./model/accounts";
 import * as categoriesModel from "./model/categories";
 import { Category } from "./model/categories";
 import * as transactionsModel from "./model/transactions";
@@ -19,20 +19,20 @@ export const createAccount = (email: string, password: string): Account => {
   return accountsModel.createAccount(email, password);
 };
 
-export const getTransactions = (email: string, password: string): Transactions => {
-  return transactionsModel.getTransactions(email, password);
+export const getTransactions = (loginCredentials: LoginCredentials): Transactions => {
+  return transactionsModel.getTransactions(loginCredentials);
 };
 
-export const createTransaction = (email: string, password: string, transaction: UnpersistedTransaction): Transaction => {
-  return transactionsModel.createTransaction(email, password, transaction);
+export const createTransaction = (loginCredentials: LoginCredentials, transaction: UnpersistedTransaction): Transaction => {
+  return transactionsModel.createTransaction(loginCredentials, transaction);
 };
 
-export const updateTransaction = (email: string, password: string, transactionId: Transaction["id"], transaction: Transaction) => {
-  return transactionsModel.updateTransaction(email, password, transactionId, transaction);
+export const updateTransaction = (loginCredentials: LoginCredentials, transactionId: Transaction["id"], transaction: Transaction) => {
+  return transactionsModel.updateTransaction(loginCredentials, transactionId, transaction);
 };
 
-export const deleteTransaction = (email: string, password: string, transactionId: Transaction["id"]) => {
-  return transactionsModel.deleteTransaction(email, password, transactionId);
+export const deleteTransaction = (loginCredentials: LoginCredentials, transactionId: Transaction["id"]) => {
+  return transactionsModel.deleteTransaction(loginCredentials, transactionId);
 };
 
 export const createCategory = (name: string): Category => {
