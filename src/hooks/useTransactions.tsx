@@ -1,19 +1,34 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import * as api from "../api";
 import { Category } from "../model/categories";
 import { Transaction, UnpersistedTransaction } from "../model/transactions";
 import { replaceElement } from "../utils/array";
 import { useAccountContext } from "./useAccounts";
 
+/**
+ * Hook responsible for managing the react state for the list of transactions for a user.  Also for interacting with
+ * the backend
+ */
 export const useTransactions = () => {
   const { authenticatedAccount, transactions, setTransactions } = useAccountContext();
 
+  const isExpense = useCallback((value: Transaction["value"]): boolean => {
+    return value < 0;
+  }, []);
+
+  const expenses = useMemo(() => (
+      transactions.filter(({ value }) => isExpense(value))
+    ),
+    [isExpense, transactions]);
+
+  const incomes = useMemo(() => (
+      transactions.filter(({ value }) => !isExpense(value))
+    ),
+    [isExpense, transactions]);
+
   const fetchTransactions = useCallback((): void => {
     if (authenticatedAccount === null) throw new Error("Cannot create transaction - not logged in");
-    const transactions = api.getTransactions(
-      authenticatedAccount.email,
-      authenticatedAccount.password
-    );
+    const transactions = api.getTransactions(authenticatedAccount);
     setTransactions(transactions);
   }, [authenticatedAccount, setTransactions]);
 
@@ -24,7 +39,7 @@ export const useTransactions = () => {
   const createTransaction = useCallback((transaction: UnpersistedTransaction): Transaction => {
     if (authenticatedAccount === null) throw new Error("Cannot create transaction - not logged in");
 
-    const savedTransaction = api.createTransaction(authenticatedAccount.email, authenticatedAccount.password, transaction);
+    const savedTransaction = api.createTransaction(authenticatedAccount, transaction);
     setTransactions((transactions) => [...transactions, savedTransaction]);
 
     return savedTransaction;
@@ -37,12 +52,7 @@ export const useTransactions = () => {
 
   const updateTransaction = useCallback((id: Transaction["id"], transaction: Transaction) => {
     if (authenticatedAccount === null) throw new Error("Cannot create transaction - not logged in");
-    const updatedTransaction = api.updateTransaction(
-      authenticatedAccount.email,
-      authenticatedAccount.password,
-      id,
-      transaction
-    );
+    const updatedTransaction = api.updateTransaction(authenticatedAccount, id, transaction);
 
     setTransactions(transactions =>
       replaceElement(
@@ -55,15 +65,14 @@ export const useTransactions = () => {
   const deleteTransaction = useCallback((id: Category["id"]) => {
     if (authenticatedAccount === null) throw new Error("Cannot delete transaction - not logged in");
 
-    api.deleteTransaction(
-      authenticatedAccount.email,
-      authenticatedAccount.password,
-      id
-    );
+    api.deleteTransaction(authenticatedAccount, id);
     setTransactions(transactions => transactions.filter(transaction => transaction.id !== id));
   }, [authenticatedAccount, setTransactions]);
 
   return {
+    isExpense,
+    expenses,
+    incomes,
     fetchTransactions,
     transactions,
     getTransaction,

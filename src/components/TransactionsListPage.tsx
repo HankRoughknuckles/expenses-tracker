@@ -2,6 +2,7 @@ import { Button, Grid } from "@mui/material";
 import React, { FunctionComponent } from "react";
 import { useNavigate } from "react-router-dom";
 import { NEW_TRANSACTION_PATH } from "../utils/routes";
+import { ExpensesAndProfitsChart } from "./ExpensesAndProfitsChart";
 import { TransactionsTable } from "./TransactionsTable";
 
 export const TransactionsListPage: FunctionComponent = () => {
@@ -15,6 +16,7 @@ export const TransactionsListPage: FunctionComponent = () => {
       <Grid item xs={12}>
         <Button variant="contained" onClick={() => navigate(NEW_TRANSACTION_PATH)}>Create New Expense</Button>
       </Grid>
+      <ExpensesAndProfitsChart />
       <TransactionsTable />
     </Grid>
   );

@@ -11,3 +11,8 @@ export const replaceElement = <T>(array: T[], newElement: T, predicate: (element
   newArray[index] = newElement;
   return newArray;
 };
+
+/** Sums all the items in the passed number array */
+export const sumArray = (input: number[]): number => (
+  input.reduce((sum, current) => sum + current, 0)
+);

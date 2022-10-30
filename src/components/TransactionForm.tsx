@@ -2,23 +2,20 @@ import { Box, Button, TextField, ToggleButton, ToggleButtonGroup } from "@mui/ma
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { Moment } from "moment";
 import React, { FunctionComponent, SyntheticEvent, useState } from "react";
+import { useTransactions } from "../hooks/useTransactions";
 import { Transaction } from "../model/transactions";
+import { msAsDateString } from "../utils/dates";
 import { isValidNumberString } from "../utils/string";
 
 /**
- * Since sign is a string and we need to store expenses as negative and incomes as positive, this checks whether the
+ * Since we need to store expenses as negative and incomes as positive, this checks whether the
  * user selected expense or income, then outputs value with the proper sign accordingly
- * @param isExpense
- * @param value
  */
-const getValueWithSign = (isExpense: boolean, value: string): string => {
-  const valueAsNumber = parseFloat(value);
+const getValueWithSign = (isExpense: boolean, value: number): number => {
   if (isExpense) {
-    const negative = Math.abs(valueAsNumber) * -1;
-    return negative.toFixed(2);
+    return Math.abs(value) * -1;
   } else {
-    const positive = Math.abs(valueAsNumber);
-    return positive.toFixed(2);
+    return Math.abs(value);
   }
 };
 
@@ -47,20 +44,21 @@ export const TransactionForm: FunctionComponent<Props> =
      initialTitle,
      initialValue
    }) => {
-    // true if expense, false if income
-    const [isExpense, setIsExpense] = useState(true);
-    const [date, setDate] = useState(initialDate || Date.now());
-    const [title, setTitle] = useState(initialTitle || "");
-    const [value, setValue] = useState(initialValue || "");
+    const { isExpense: isTransactionAnExpense } = useTransactions();
+    const [isExpense, setIsExpense] = useState<boolean>(initialValue !== undefined ? isTransactionAnExpense(initialValue) : true);
+    const [date, setDate] = useState<string>(initialDate ?? msAsDateString(Date.now()));
+    const [title, setTitle] = useState<string>(initialTitle ?? "");
+    // need to store value as a string to get around the weirdness with entering numbers in the input
+    const [value, setValue] = useState<string>(initialValue?.toString() ?? "");
 
     const onIsExpenseToggle = (_: any, value: string) => {
       setIsExpense(value === "true");
     };
 
-    const onDateChange = (value: Moment | null) => {
-      if (value === null) return;
-      const msSinceEpoch = value.valueOf();
-      setDate(msSinceEpoch);
+    const onDateChange = (valueAsMoment: Moment | null) => {
+      if (valueAsMoment === null) return;
+      const dateString = msAsDateString(valueAsMoment.valueOf());
+      setDate(dateString);
     };
 
     const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,8 +73,12 @@ export const TransactionForm: FunctionComponent<Props> =
 
     const handleFormSubmit = (event: SyntheticEvent) => {
       event.preventDefault();
-      const valueWithSign = getValueWithSign(isExpense, value);
-      onFormSubmit({ date, title, value: valueWithSign });
+      const valueWithSign = getValueWithSign(isExpense, parseFloat(value));
+      onFormSubmit({
+        date,
+        title,
+        value: valueWithSign
+      });
     };
 
     return (
