@@ -32,9 +32,11 @@ export const CategoriesListPage: FunctionComponent = () => {
           {categories.map(({ name, id }) => (
             <ListItem key={id}>
               <Grid item xs={4} md={3}><ListItemText>{name}</ListItemText></Grid>
-              <Grid item xs={2} md={1}><EditIcon sx={{ cursor: "pointer" }} onClick={getOnEditClickHandler(id)} />
+              <Grid item xs={2} md={3}>
+                <EditIcon sx={{ cursor: "pointer" }} onClick={getOnEditClickHandler(id)} />
+                &nbsp;
+                <DeleteButtonWithConfirm onConfirm={getDeleteHandler(id)} />
               </Grid>
-              <Grid item xs={3} md={2}><DeleteButtonWithConfirm onConfirm={getDeleteHandler(id)} /></Grid>
             </ListItem>
           ))}
         </List>

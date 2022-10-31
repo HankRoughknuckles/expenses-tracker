@@ -20,7 +20,7 @@ export const LoginPage: FunctionComponent = () => {
     setPassword(event.target.value);
   };
 
-  const onLoginClick = () => {
+  const onFormSubmit = () => {
     try {
       login(email, password);
       navigate(TRANSACTIONS_PATH, { replace: true });
@@ -35,18 +35,26 @@ export const LoginPage: FunctionComponent = () => {
     <>
       <h2>Login</h2>
       {alertText !== "" && <Alert severity="error">{alertText}</Alert>}
-      <div>
-        <TextField label="email" variant="standard" value={email} onChange={onEmailChange} />
-      </div>
-      <div>
-        <TextField label="password" type={"password"} variant="standard" value={password} onChange={onPasswordChange} />
-      </div>
-      <p>
-        <Button variant="contained" onClick={onLoginClick}>Login</Button>
-      </p>
-      <p>
-        Not a user? <Link to={NEW_ACCOUNT_PATH}>Create an account</Link>
-      </p>
+      <form onSubmit={onFormSubmit}>
+        <div>
+          <TextField label="email" variant="standard" value={email} onChange={onEmailChange} />
+        </div>
+        <div>
+          <TextField
+            label="password"
+            type={"password"}
+            variant="standard"
+            value={password}
+            onChange={onPasswordChange}
+          />
+        </div>
+        <p>
+          <Button type="submit" variant="contained">Save</Button>
+        </p>
+        <p>
+          Not a user? <Link to={NEW_ACCOUNT_PATH}>Create an account</Link>
+        </p>
+      </form>
     </>
   );
 };

@@ -15,7 +15,6 @@ import { useCategories } from "./hooks/useCategories";
 import { useLogin } from "./hooks/useLogin";
 import { useTransactions } from "./hooks/useTransactions";
 import { setupDatabase } from "./model";
-import { createAccount, getAccounts } from "./model/accounts";
 import {
   CATEGORIES_PATH,
   EDIT_CATEGORY_PATH,
@@ -50,9 +49,7 @@ const publicRoutes = (
 );
 
 function App() {
-  // const { isUserLoggedIn } = useLogin();
-  // TODO: warning, remove this before finishing everything
-  const { isUserLoggedIn, login } = useLogin();
+  const { isUserLoggedIn } = useLogin();
   const { fetchCategories } = useCategories();
   const { fetchTransactions } = useTransactions();
 
@@ -60,14 +57,6 @@ function App() {
   useEffect(() => {
     setupDatabase();
     fetchCategories();
-
-    // // TODO: WARNING! REMOVE THIS
-    // // TODO: WARNING! REMOVE THIS
-    const account = getAccounts().find(a => a.email === "admin" && a.password === "admin");
-    if (!account) {
-      createAccount("admin", "admin");
-    }
-    login("admin", "admin");
   }, [fetchCategories]);
 
   // Fetch transactions for the user on login

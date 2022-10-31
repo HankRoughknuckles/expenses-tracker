@@ -1,5 +1,7 @@
 import { replaceElement } from "../utils/array";
+import { getAccounts } from "./accounts";
 import { Categories, DatabaseId, generateId, getDatabase, setDatabase } from "./index";
+import { getTransactions, removeCategoryFromTransaction } from "./transactions";
 
 export interface Category {
   id: DatabaseId;
@@ -47,7 +49,15 @@ export const createCategory = (name: string): Category => {
 export const deleteCategory = (categoryId: Category["id"]) => {
   const newList = getCategories().filter(category => category.id !== categoryId);
   setCategories(newList);
-  // TODO: remove the id from expenses that have the id when you implement expenses
+
+  // Remove the category id from all transactions that referenced it
+  getAccounts().forEach(({ email, password }) => {
+    const loginCredentials = { email, password };
+    const transactions = getTransactions(loginCredentials);
+    transactions.forEach(transaction => {
+      removeCategoryFromTransaction(loginCredentials, transaction.id);
+    });
+  });
 };
 
 /** Changes the category with the passed id to have the new information passed in */

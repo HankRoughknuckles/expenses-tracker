@@ -14,8 +14,8 @@ export const ExpensesAndProfitsChart: FunctionComponent = () => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="expenses" fill="#8884d8" />
-        <Bar dataKey="incomes" fill="#82ca9d" />
+        <Bar dataKey="expenses" fill="#C23F38" />
+        <Bar dataKey="incomes" fill="#45783B" />
       </BarChart>
     </div>
   );

@@ -3,7 +3,7 @@ import React, { FunctionComponent } from "react";
 import { useNavigate } from "react-router-dom";
 import { NEW_TRANSACTION_PATH } from "../utils/routes";
 import { ExpensesAndProfitsChart } from "./ExpensesAndProfitsChart";
-import { TransactionsTable } from "./TransactionsTable";
+import { TransactionsList } from "./TransactionsList";
 
 export const TransactionsListPage: FunctionComponent = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export const TransactionsListPage: FunctionComponent = () => {
         <Button variant="contained" onClick={() => navigate(NEW_TRANSACTION_PATH)}>Create New Expense</Button>
       </Grid>
       <ExpensesAndProfitsChart />
-      <TransactionsTable />
+      <TransactionsList />
     </Grid>
   );
 };
