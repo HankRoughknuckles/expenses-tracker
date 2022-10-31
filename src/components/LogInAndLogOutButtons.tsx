@@ -17,7 +17,6 @@ export const LogInAndLogOutButtons: FunctionComponent = () => {
 
   return (
     <>
-      {/* TODO: consider making these buttons instead of links */}
       <Link to={LOGIN_PATH} className={"navItem"}>Login</Link>
       <Link to={NEW_ACCOUNT_PATH} className={"navItem"}>Create account</Link>
     </>

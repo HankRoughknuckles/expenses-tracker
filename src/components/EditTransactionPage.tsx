@@ -3,17 +3,17 @@ import React, { FunctionComponent, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTransactions } from "../hooks/useTransactions";
 import { TRANSACTIONS_PATH } from "../utils/routes";
-import { ExpenseFormData, TransactionForm } from "./TransactionForm";
+import { TransactionForm, TransactionFormData } from "./TransactionForm";
 
 export const EditTransactionPage: FunctionComponent = () => {
   const [alertText, setAlertText] = useState("");
   const { transactionId } = useParams();
   const { getTransaction, updateTransaction } = useTransactions();
   const transaction = getTransaction(transactionId ?? "");
-  const { date, title, value } = transaction ?? {};
+  const { date, title, value, categoryId } = transaction ?? {};
   const navigate = useNavigate();
 
-  const onFormSubmit = ({ date, title, value }: ExpenseFormData) => {
+  const onFormSubmit = ({ date, title, value, categoryId }: TransactionFormData) => {
     if (transactionId === undefined) throw new Error("Transaction not found");
 
     try {
@@ -21,7 +21,8 @@ export const EditTransactionPage: FunctionComponent = () => {
         id: transactionId,
         date,
         title,
-        value
+        value,
+        categoryId
       });
 
       navigate(TRANSACTIONS_PATH);
@@ -44,7 +45,13 @@ export const EditTransactionPage: FunctionComponent = () => {
       )}
       {
         transaction !== undefined ? (
-          <TransactionForm onFormSubmit={onFormSubmit} initialDate={date} initialTitle={title} initialValue={value} />
+          <TransactionForm
+            onFormSubmit={onFormSubmit}
+            initialDate={date}
+            initialTitle={title}
+            initialValue={value}
+            initialCategoryId={categoryId}
+          />
         ) : <p>Category not found...</p>
       }
     </Grid>

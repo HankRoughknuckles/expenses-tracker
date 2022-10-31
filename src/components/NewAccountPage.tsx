@@ -20,7 +20,7 @@ export const NewAccountPage: FunctionComponent = () => {
     setPassword(event.target.value);
   };
 
-  const onCreateAccountClick = () => {
+  const onFormSubmit = () => {
     try {
       createAccount(email, password);
       login(email, password);
@@ -36,18 +36,21 @@ export const NewAccountPage: FunctionComponent = () => {
     <>
       <h2>Create Account</h2>
       {alertText !== "" && <Alert severity="error">{alertText}</Alert>}
-      <div>
-        <TextField label="email" variant="standard" value={email} onChange={onEmailChange} />
-      </div>
-      <div>
-        <TextField label="password" type={"password"} variant="standard" value={password} onChange={onPasswordChange} />
-      </div>
-      <p>
-        <Button variant="contained" onClick={onCreateAccountClick}>Create Account</Button>
-      </p>
-      <p>
-        Have an account? <Link to={LOGIN_PATH}>Log in here</Link>
-      </p>
+      <form onSubmit={onFormSubmit}>
+        <div>
+          <TextField label="email" variant="standard" value={email} onChange={onEmailChange} />
+        </div>
+        <div>
+          <TextField label="password" type={"password"} variant="standard" value={password}
+                     onChange={onPasswordChange} />
+        </div>
+        <p>
+          <Button type="submit" variant="contained">Create Account</Button>
+        </p>
+        <p>
+          Have an account? <Link to={LOGIN_PATH}>Log in here</Link>
+        </p>
+      </form>
     </>
   );
 };

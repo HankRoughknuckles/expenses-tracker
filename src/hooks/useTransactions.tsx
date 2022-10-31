@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import * as api from "../api";
 import { Category } from "../model/categories";
 import { Transaction, UnpersistedTransaction } from "../model/transactions";
@@ -12,20 +12,12 @@ import { useAccountContext } from "./useAccounts";
 export const useTransactions = () => {
   const { authenticatedAccount, transactions, setTransactions } = useAccountContext();
 
+  /** Whether the passed value from a transaction is an expense or an income */
   const isExpense = useCallback((value: Transaction["value"]): boolean => {
     return value < 0;
   }, []);
 
-  const expenses = useMemo(() => (
-      transactions.filter(({ value }) => isExpense(value))
-    ),
-    [isExpense, transactions]);
-
-  const incomes = useMemo(() => (
-      transactions.filter(({ value }) => !isExpense(value))
-    ),
-    [isExpense, transactions]);
-
+  /** Fetches the list of transactions for the user from the backend */
   const fetchTransactions = useCallback((): void => {
     if (authenticatedAccount === null) throw new Error("Cannot create transaction - not logged in");
     const transactions = api.getTransactions(authenticatedAccount);
@@ -45,11 +37,13 @@ export const useTransactions = () => {
     return savedTransaction;
   }, [authenticatedAccount, setTransactions]);
 
+  /** Returns the transaction with the id that belongs to the current user */
   const getTransaction = useCallback((id: Transaction["id"]) => {
     if (authenticatedAccount === null) throw new Error("Cannot create transaction - not logged in");
     return transactions.find(transaction => transaction.id === id);
   }, [authenticatedAccount, transactions]);
 
+  /** Calls the backend to update the transaction with the id to have new information */
   const updateTransaction = useCallback((id: Transaction["id"], transaction: Transaction) => {
     if (authenticatedAccount === null) throw new Error("Cannot create transaction - not logged in");
     const updatedTransaction = api.updateTransaction(authenticatedAccount, id, transaction);
@@ -62,22 +56,35 @@ export const useTransactions = () => {
       ));
   }, [authenticatedAccount, setTransactions]);
 
-  const deleteTransaction = useCallback((id: Category["id"]) => {
+  /** Calls the backend to delete the transaction with the passed id */
+  const deleteTransaction = useCallback((id: Transaction["id"]) => {
     if (authenticatedAccount === null) throw new Error("Cannot delete transaction - not logged in");
 
     api.deleteTransaction(authenticatedAccount, id);
     setTransactions(transactions => transactions.filter(transaction => transaction.id !== id));
   }, [authenticatedAccount, setTransactions]);
 
+  /** Changes the local state (does not call the backend) to remove the passed categoryId from all the user's transactions */
+  const pruneCategoryId = useCallback((id: Category["id"]) => {
+    // prune the ids from transactions that reference that category
+    setTransactions(transactions =>
+      transactions.map(transaction => {
+        if (transaction.categoryId === id) return {
+          ...transaction,
+          categoryId: undefined
+        };
+        return transaction;
+      }));
+  }, [setTransactions]);
+
   return {
     isExpense,
-    expenses,
-    incomes,
     fetchTransactions,
     transactions,
     getTransaction,
     createTransaction,
     updateTransaction,
-    deleteTransaction
+    deleteTransaction,
+    pruneCategoryId
   };
 };

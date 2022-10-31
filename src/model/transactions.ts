@@ -1,5 +1,6 @@
 import { replaceElement } from "../utils/array";
 import { checkCredentials, getAccounts, LoginCredentials, setAccounts } from "./accounts";
+import { Category } from "./categories";
 import { DatabaseId, generateId, Transactions } from "./index";
 
 export interface Transaction {
@@ -12,6 +13,8 @@ export interface Transaction {
    * an expense.  If positive, then it was an income.
    **/
   value: number;
+  /** id of the category that this transaction belongs to */
+  categoryId?: Category["id"];
 }
 
 /** Represents a transaction that hasn't been saved to the database yet */
@@ -44,6 +47,12 @@ export const getTransactions = ({ email, password }: LoginCredentials): Transact
   return account.transactions;
 };
 
+/** returns the transaction that has the matching id*/
+export const getTransaction = (id: Transaction["id"]): Transaction | undefined => {
+  const allTransactions = getAccounts().flatMap(account => account.transactions);
+  return allTransactions.find(transaction => transaction.id === id);
+};
+
 /** Adds the passed transaction to the list of transactions for the passed user */
 export const createTransaction = (loginCredentials: LoginCredentials, transaction: UnpersistedTransaction): Transaction => {
   const account = checkCredentials(loginCredentials.email, loginCredentials.password);
@@ -53,7 +62,8 @@ export const createTransaction = (loginCredentials: LoginCredentials, transactio
     id: generateId(),
     date: transaction.date,
     title: transaction.title,
-    value: transaction.value
+    value: transaction.value,
+    categoryId: transaction.categoryId
   };
 
   setTransactions(account, [
@@ -94,5 +104,19 @@ export const deleteTransaction = (loginCredentials: LoginCredentials, id: Transa
   const account = checkCredentials(loginCredentials.email, loginCredentials.password);
   const newList = getTransactions(account).filter(transaction => transaction.id !== id);
   setTransactions(account, newList);
+};
+
+export const removeCategoryFromTransaction = (loginCredentials: LoginCredentials, transactionId: Transaction["id"]) => {
+  const transaction = getTransaction(transactionId);
+  if (transaction === undefined) throw new Error(`Cannot remove category from transaction.  Transaction with id ${transactionId} not found`);
+
+  updateTransaction(
+    loginCredentials,
+    transactionId,
+    {
+      ...transaction,
+      categoryId: undefined
+    }
+  );
 };
 

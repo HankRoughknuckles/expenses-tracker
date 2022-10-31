@@ -1,4 +1,4 @@
-import { getDatabase, setDatabase, Transactions } from "./index";
+import { generateId, getDatabase, setDatabase, Transactions } from "./index";
 
 export interface Account {
   email: string;
@@ -45,7 +45,38 @@ const newAccountFactory = (email: string, password: string) => {
   return {
     email,
     password,
-    transactions: []
+    transactions: [
+      {
+        id: generateId(),
+        date: "2022-10-28T22:00:00.000Z",
+        title: "Payback from Jane",
+        value: 120
+      },
+      {
+        id: generateId(),
+        date: "2022-10-28T22:00:00.000Z",
+        title: "Plane tickets",
+        value: -3000
+      },
+      {
+        id: generateId(),
+        date: "2022-10-29T22:00:00.000Z",
+        title: "Thai food",
+        value: -350.2
+      },
+      {
+        id: generateId(),
+        date: "2022-10-30T22:00:00.000Z",
+        title: "Paycheck",
+        value: 5000
+      },
+      {
+        id: generateId(),
+        date: "2022-10-30T22:00:00.000Z",
+        title: "Gym membership",
+        value: -350.2
+      }
+    ]
   };
 };
 

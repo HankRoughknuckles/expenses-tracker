@@ -3,19 +3,20 @@ import React, { FunctionComponent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTransactions } from "../hooks/useTransactions";
 import { TRANSACTIONS_PATH } from "../utils/routes";
-import { ExpenseFormData, TransactionForm } from "./TransactionForm";
+import { TransactionForm, TransactionFormData } from "./TransactionForm";
 
 export const NewTransactionPage: FunctionComponent = () => {
   const [alertText, setAlertText] = useState("");
   const { createTransaction } = useTransactions();
   const navigate = useNavigate();
 
-  const onFormSubmit = ({ date, title, value }: ExpenseFormData) => {
+  const onFormSubmit = ({ date, title, value, categoryId }: TransactionFormData) => {
     try {
       createTransaction({
         date,
         title,
-        value
+        value,
+        categoryId
       });
 
       navigate(TRANSACTIONS_PATH);

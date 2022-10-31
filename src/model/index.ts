@@ -23,6 +23,10 @@ const initialState: Database = {
     {
       id: uuid(),
       name: "Food"
+    },
+    {
+      id: uuid(),
+      name: "Health"
     }
   ]
 };
